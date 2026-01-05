@@ -5,3 +5,6 @@ result-*
 # Nix develop shells
 .direnv/
 .envrc
+
+.rigup
+rigup.local.toml

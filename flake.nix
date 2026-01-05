@@ -4,16 +4,25 @@
   inputs = {
     nixpkgs.url = "github:NixOS/nixpkgs/nixpkgs-unstable";
     rigup.url = "github:YPares/rigup.nix";
+    agentSkills.url = "github:YPares/agent-skills/dev";
+
+    # `rigup` recognizes inputs which are Claude Marketplaces
+    # (i.e. which have a `.claude-plugin/marketplace.json` file),
+    # and special-cases them so their skills can be imported to create riglets
+    # See `riglets/{algorithmic-art,frontend-design}.nix` in this repo
+    anthropics-skills = {
+      url = "github:anthropics/skills";
+      flake = false;
+    };
   };
 
   outputs =
-    { self, rigup, ... }@inputs:
-    let
-      system = "x86_64-linux";
-    in
-    rigup { inherit inputs; }
-    // {
-      # Make the rig directly buildable
-      packages.${system}.default = self.rigs.${system}.default.home;
+    {
+      rigup,
+      ...
+    }@inputs:
+    rigup {
+      inherit inputs;
+      checkRigs = true;
     };
 }
